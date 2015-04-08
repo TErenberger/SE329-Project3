@@ -19,7 +19,7 @@ $(function() {
       $('#tablist').append(
         '<li class="list-group-item" id="item' + currentTab.id + '">'
         +'<div class="row">'
-        +'<div class="col-xs-8 tab-element">'
+        +'<div class="col-xs-10 tab-element">'
         +'<a class="tab-title">'
         + '<img class="tab-img"  height="16px" src="' + currentTab.favIconUrl + '">'
         + currentTab.title
@@ -30,19 +30,19 @@ $(function() {
         + '<a class="close"><span class="close-button glyphicon glyphicon-remove"></span></a>'
         // + '<span class="close-button glyphicon glyphicon-remove"></span>'
         + '</div>'
-        + '<div class="col-xs-2" id="' + currentTab.id + '">'
-        + '<a class="expand"><span class="close-button glyphicon glyphicon-plus"></span></a>'
-        + '</div>'
+        //+ '<div class="col-xs-1" id="' + currentTab.id + '">'
+        //+ '<a class="expand"><span class="close-button glyphicon glyphicon-plus"></span></a>'
+        //+ '</div>'
         + '</div>'
         +'</li>');
     }
       $('#search').keyup(function(){
             var value = $(this).val().toLocaleLowerCase();
             if(value == ""){
-                $('.tablist > li').show();
+                $('#tablist > li').show();
             }
             else{
-                $('.tablist > li').each(function(){
+                $('#tablist > li').each(function(){
                     var select = $(this).text().toLocaleLowerCase();
                     (select.indexOf(value) >= 0) ? $(this).show() : $(this).hide();
                 });

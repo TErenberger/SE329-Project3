@@ -23,6 +23,15 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="first">
                 <div class="panel">
+                <ul class="list-group" id="s">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-12">
+                            <input class="form-control"id="search" type="text" autofocus="autofocus" name="listSearch" placeholder="Search Tabs" onkeyup="filterTabs(this)">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
                     <ul class="list-group" id="tablist">
                     </ul>
                 </div>
@@ -39,7 +48,7 @@
 </div>
 
 
-<!--
+<!-- old view
     <div class="tabs">
         <ul class="tab-links">
             <li class="active"><a href="#tab1">List</a></li>
