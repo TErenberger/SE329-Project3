@@ -2,11 +2,44 @@
 
 <head>
     <script type="text/javascript" src="scripts/jquery.js"></script>
+    <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="scripts/popup.js"></script>
-    <link rel="stylesheet" type="text/css" href="popup.css">
+    <link rel="stylesheet" type="text/css" href="css/popupNew.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
 </head>
 
 <body>
+
+<div class="container">
+    <h4> Tab Manager </h4>
+    <hr/>
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active" role="presentation"><a href="#first"aria-controls="first" role="tab" data-toggle="tab">List</a></li>
+            <li role="presentation"><a href="#second" aria-controls="second" role="tab" data-toggle="tab">Condense</a></li>
+            <li role="presentation"><a href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="first">
+                <div class="panel">
+                    <ul class="list-group" id="tablist">
+                    </ul>
+                </div>
+                
+            </div>
+            <div role="tabpanel" class="tab-pane" id="second">
+                <p> hello 2</p>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="third">
+                <p> hello 3</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
     <div class="tabs">
         <ul class="tab-links">
             <li class="active"><a href="#tab1">List</a></li>
@@ -28,7 +61,7 @@
         </div>
         
     </div>
-    
+    -->
 </body>
 
 </html>

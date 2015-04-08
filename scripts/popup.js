@@ -1,6 +1,6 @@
 //https://github.com/dburles/chrome-tab-popup trying to get jquery to work
 var ellipsize = function(string) {
-  var length = 40;
+  var length = 20;
   if (string.length > length)
     return string.substr(0, length) + '&hellip;';
   return string;
@@ -17,12 +17,24 @@ $(function() {
       var currentTab = tab[i];
         
       $('#tablist').append(
-        '<li id="' + currentTab.id + '">' +
-          '<img width="25" height="25" src="' + currentTab.favIconUrl + '">' +
-          '<a>' + ellipsize(currentTab.title) + '</a>' +
-		  '<span class="expand">^</span>' +
-          '<span class="close">x</span>' +
-        '</li>');
+        '<li class="list-group-item" id="item' + currentTab.id + '">'
+        +'<div class="row">'
+        +'<div class="col-xs-8 tab-element">'
+        +'<a class="tab-title">'
+        + '<img class="tab-img"  height="16px" src="' + currentTab.favIconUrl + '">'
+        + currentTab.title
+        //'<span class="pull-right glyphicon glyphicon-plus"></span>' 
+        + '</a>'
+        + '</div>'
+        + '<div class="col-xs-2" id="' + currentTab.id + '">'
+        + '<a class="close"><span class="close-button glyphicon glyphicon-remove"></span></a>'
+        // + '<span class="close-button glyphicon glyphicon-remove"></span>'
+        + '</div>'
+        + '<div class="col-xs-2" id="' + currentTab.id + '">'
+        + '<a class="expand"><span class="close-button glyphicon glyphicon-plus"></span></a>'
+        + '</div>'
+        + '</div>'
+        +'</li>');
     }
       $('#search').keyup(function(){
             var value = $(this).val().toLocaleLowerCase();
@@ -57,7 +69,7 @@ $(function() {
   $('body').on('click', '.close', function() {
     var parent = $(this).parent();
     chrome.tabs.remove(parseInt(parent.attr('id'), 10));
-    parent.remove();
+    $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
   });
 });
 

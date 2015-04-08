@@ -1,0 +1,36 @@
+body {
+	width: 300px;
+}
+
+.tab-title {
+	font-size: 13px;
+	padding: 0px 0px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.tab-element {
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.tab-img {
+	padding-right: 5px;
+}
+
+.close-button {
+	display: inline;
+	font-size: 13px;
+
+}
+
+.tab-right {
+	display:inline;
+
+	width:20%;
+}
+
+.tab-left {
+	display:inline;
+	width:80%;
+}
