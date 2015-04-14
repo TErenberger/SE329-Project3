@@ -11,32 +11,63 @@ function filterTabs(element){
     
 }
 
-$(function() {
-  chrome.tabs.query({ currentWindow: true }, function(tab) {
-    for (var i = tab.length - 1; i >= 0; i--) {
-      var currentTab = tab[i];
-        
-      $('#tablist').append(
-        '<li class="list-group-item" id="item' + currentTab.id + '">'
+var tabManagerModel = {
+    allTabs: [],
+    readingList: [],
+    groups: []
+};
+
+function mTab(chromeTab) {
+    this.title = chromeTab.title;
+    this.url = chromeTab.url;
+    this.id = chromeTab.id;
+    this.favIconUrl = chromeTab.favIconUrl;
+}
+
+function readingListTab(mtab) {
+    this.read = false;
+    this.dateAdded = Date.now();
+    this.tab = mtab;
+}
+
+function addToReadingList(mtab) {
+    tabManagerModel.readingList.push(new readingListTab(mtab));
+}
+
+function createTabListElement(mtab) {
+    var html = '<li class="list-group-item" id="item' + mtab.id + '">'
         +'<div class="row">'
         +'<div class="col-xs-10 tab-element">'
         +'<a class="tab-title">'
-        + '<img class="tab-img"  height="16px" src="' + currentTab.favIconUrl + '">'
-        + currentTab.title
+        + '<img class="tab-img"  height="16px" src="' + mtab.favIconUrl + '">'
+        + mtab.title
         //'<span class="pull-right glyphicon glyphicon-plus"></span>' 
         + '</a>'
         + '</div>'
-        + '<div class="col-xs-2" id="' + currentTab.id + '">'
+        + '<div class="col-xs-1" id="' + mtab.id + '">'
         + '<a class="close"><span class="close-button glyphicon glyphicon-remove"></span></a>'
         // + '<span class="close-button glyphicon glyphicon-remove"></span>'
         + '</div>'
-        //+ '<div class="col-xs-1" id="' + currentTab.id + '">'
-        //+ '<a class="expand"><span class="close-button glyphicon glyphicon-plus"></span></a>'
-        //+ '</div>'
+        + '<div class="col-xs-1" id="read' + mtab.id + '">'
+        + '<a class="readingListAddElement"><span class="glyphicon glyphicon-pushpin"></span></a>'
         + '</div>'
-        +'</li>');
+        + '</div>'
+        +'</li>';
+    return html;
+}
+
+$(function() {
+  chrome.tabs.query({ currentWindow: true }, function(tab) {
+    for (var i = tab.length - 1; i >= 0; i--) {
+        //reduce chrome data structure to our data structure
+        var currentTab = new mTab(tab[i]);
+        //append html representation of our data structure
+        $('#tablist').append(createTabListElement(currentTab));
+        //add to the global data structure
+        tabManagerModel.allTabs.push(currentTab);
     }
-      $('#search').keyup(function(){
+
+    $('#search').keyup(function(){
             var value = $(this).val().toLocaleLowerCase();
             if(value == ""){
                 $('#tablist > li').show();
@@ -51,9 +82,9 @@ $(function() {
         });
     $('.tab-count').text(tab.length);
   });
-  
+  /*
   function expand() {
-	var tabId = parseInt($(this).attr('id'), 10);
+    var tabId = parseInt($(this).attr('id'), 10);
 	chrome.windows.create({ tabId: tabId, focused: true });
   }
   
@@ -70,7 +101,7 @@ $(function() {
     var parent = $(this).parent();
     chrome.tabs.remove(parseInt(parent.attr('id'), 10));
     $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
-  });
+  });*/
 });
 
 jQuery(document).ready(function () {
@@ -151,5 +182,8 @@ jQuery(document).ready(function () {
                 chrome.tabs.create({ url: tabUrl });
             }
         }
+    });
+    $('body').on('click', '.readingListAddElement', function () {
+        
     });
 });
