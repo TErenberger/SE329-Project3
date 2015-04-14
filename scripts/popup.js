@@ -12,9 +12,9 @@ function filterTabs(element){
 }
 
 var tabManagerModel = {
-    allTabs: [],
-    readingList: [],
-    groups: []
+    allTabs: {},
+    readingList: {},
+    groups: {}
 };
 
 function mTab(chromeTab) {
@@ -31,7 +31,7 @@ function readingListTab(mtab) {
 }
 
 function addToReadingList(mtab) {
-    tabManagerModel.readingList.push(new readingListTab(mtab));
+    tabManagerModel.readingList[mtab.id] = new readingListTab(mtab);
 }
 
 function createTabListElement(mtab) {
@@ -48,8 +48,8 @@ function createTabListElement(mtab) {
         + '<a class="close"><span class="close-button glyphicon glyphicon-remove"></span></a>'
         // + '<span class="close-button glyphicon glyphicon-remove"></span>'
         + '</div>'
-        + '<div class="col-xs-1" id="read' + mtab.id + '">'
-        + '<a class="readingListAddElement"><span class="glyphicon glyphicon-pushpin"></span></a>'
+        + '<div class="col-xs-1">'
+        + '<a class="readingListAddElement" data-tabnum="' + mtab.id + '"><span class="glyphicon glyphicon-pushpin"></span></a>'
         + '</div>'
         + '</div>'
         +'</li>';
@@ -64,7 +64,8 @@ $(function() {
         //append html representation of our data structure
         $('#tablist').append(createTabListElement(currentTab));
         //add to the global data structure
-        tabManagerModel.allTabs.push(currentTab);
+        console.log(currentTab);
+        tabManagerModel.allTabs[currentTab.id] = currentTab;
     }
 
     $('#search').keyup(function(){
@@ -118,7 +119,7 @@ jQuery(document).ready(function () {
 
         e.preventDefault();
     });
-
+/*
     jQuery('button').on('click', function () {
         chrome.tabs.query({ currentWindow: true, active: false }, function (tab) {
 
@@ -149,7 +150,7 @@ jQuery(document).ready(function () {
             chrome.tabs.remove(tabsToRemove);
         });
     });
-
+*/
     $('body').on('click', '.delete', function () {
         var parent = $(this).parent();
 
@@ -183,7 +184,21 @@ jQuery(document).ready(function () {
             }
         }
     });
-    $('body').on('click', '.readingListAddElement', function () {
-        
+    $('body').on('click', '.readingListAddElement', function (event) {
+        var id = $(this).data('tabnum');
+        tabManagerModel.readingList[id] = new readingListTab(tabManagerModel.allTabs[id]);
+    });
+
+    $('body').on('click', '#reading-list', function() {
+        console.log('shit');
+        for(var currentListItem in tabManagerModel.readingList)
+        {
+            if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
+            {
+                var tab = tabManagerModel.readingList[currentListItem];
+                $('#readingListView').append(createTabListElement(tab.tab));
+            }
+            
+        }
     });
 });

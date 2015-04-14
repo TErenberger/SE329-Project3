@@ -6,7 +6,6 @@
     <script type="text/javascript" src="scripts/popup.js"></script>
     <link rel="stylesheet" type="text/css" href="css/popupNew.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
 </head>
 
 <body>
@@ -16,7 +15,7 @@
     <div role="tabpanel">
         <ul class="nav nav-tabs" role="tablist">
             <li class="active" role="presentation"><a href="#first"aria-controls="first" role="tab" data-toggle="tab">List</a></li>
-            <li role="presentation"><a href="#second" aria-controls="second" role="tab" data-toggle="tab">Reading List</a></li>
+            <li role="presentation"><a id="reading-list" href="#second" aria-controls="second" role="tab" data-toggle="tab">Reading List</a></li>
             <li role="presentation"><a href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
         </ul>
         <div class="tab-content">
@@ -45,6 +44,9 @@
                             </div>
                         </div>
                     </li>
+                </ul>
+                <ul class="list-group" id="readingListView">
+                    
                 </ul>
             </div>
             <div role="tabpanel" class="tab-pane" id="third">
