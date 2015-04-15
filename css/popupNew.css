@@ -1,5 +1,5 @@
 body {
-	width: 400px;
+	width: 500px;
 }
 
 .tab-title {
@@ -11,6 +11,7 @@ body {
 
 .tab-element {
 	text-overflow: ellipsis;
+	padding: 0px 0px;
 	overflow: hidden;
 }
 

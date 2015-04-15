@@ -13,3 +13,19 @@ Team Anime Sucks - Tab Manager
 ![](http://i.imgur.com/uikpFft.png)
 5. Choose the root directory of your cloned repo.
 6. Verify install. There should be an icon added to your main toolbar.
+
+##Extension in the regular window
+
+For debugging purposes it can be easier to work with the console/html/css tools if the extension is run in its own tab rather than spawned by clicking the extension icon.
+
+To do this:
+
+1. open url: chrome://extensions/
+
+![](http://i.imgur.com/8PpYBGV.png)
+
+2. copy ID (outlined above).
+
+3. open url: chrome-extension://{paste id here}/popup.html.
+
+4. open console as you would a normal webpage.
