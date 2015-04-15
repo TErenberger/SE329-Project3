@@ -20,12 +20,11 @@ For debugging purposes it can be easier to work with the console/html/css tools 
 
 To do this:
 
-1. open url: chrome://extensions/
-
 ![](http://i.imgur.com/8PpYBGV.png)
 
+1. open url: chrome://extensions/
 2. copy ID (outlined above).
 
 3. open url: chrome-extension://{paste id here}/popup.html.
-
+(e.g. chrome-extension://djjeggeokhpgaojgjephfgkdlajhhngk/popup.html)
 4. open console as you would a normal webpage.
