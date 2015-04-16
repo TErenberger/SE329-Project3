@@ -58,6 +58,59 @@ function createTabListElement(mtab) {
         +'</li>';
     return html;
 }
+
+
+/*
+* storage API functions
+*/ 
+var createGroup = function(groupName, url){
+	var obj = new Object();
+	obj[groupName] = url;
+	chrome.storage.local.set(obj);
+}
+
+/*
+* returns the names of every group, delimited by a comma
+*/
+var getGroups = function(){
+	chrome.storage.local.get(null, function(items){
+		alert(Object.keys(items));
+	});
+}
+
+/*
+* returns the urls associated with the specified group name
+* urls are retuned as one string for now, delimited by white space.
+*/
+var getTabsInGroup = function(groupName){
+	chrome.storage.local.get(groupName, function(items){
+		alert(items[groupName]);
+	});
+}
+
+/*
+* adds a tab url to the given group, creates the group if it does not exist already
+*/
+var addTabToGroup = function(groupName, url){
+	var currentTabsInGroup;
+	chrome.storage.local.get(groupName, function(items){
+		currentTabsInGroup = items[groupName];
+		if(currentTabsInGroup == null){
+			createGroup(groupName, url)
+		}
+		else{
+			if(currentTabsInGroup.indexOf(url) == -1){
+				var temp = currentTabsInGroup.concat(" ");
+				var newVal = temp.concat(url);
+				var obj = new Object;
+				obj[groupName] = newVal;
+				chrome.storage.local.set(obj);
+			}	
+		}
+	});
+	
+}
+
 //from old code base, prob a better way to do this, preferable using our data model to just generate the view instead of requery all tabs
 $(function() {
   chrome.tabs.query({ currentWindow: true }, function(tab) {
@@ -214,4 +267,5 @@ jQuery(document).ready(function () {
             
         }
     });
+		
 });
