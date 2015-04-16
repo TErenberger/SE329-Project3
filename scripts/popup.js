@@ -186,12 +186,12 @@ $(function() {
     var tabId = parseInt($(this).attr('id'), 10);
     chrome.tabs.update(tabId, { active: true });
   });
-
+*/
   $('body').on('click', '.close', function() {
     var parent = $(this).parent();
     chrome.tabs.remove(parseInt(parent.attr('id'), 10));
     $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
-  });*/
+  });
 });
 //might not be as useful as last group thought
 jQuery(document).ready(function () {
