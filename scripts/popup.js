@@ -19,6 +19,19 @@ var tabManagerModel = {
     groups: {}
 };
 
+function updateBadge() {
+
+    var count = 0;
+    for(var currentListItem in tabManagerModel.readingList)
+    {
+        if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
+        {
+            count++;
+        }
+    }
+    chrome.browserAction.setBadgeText({'text': '' + count});
+}
+
 //'constructor' for the basic tab data type that is a subset of the chrome tab data type
 function mTab(chromeTab) {
     this.title = chromeTab.title;
@@ -31,7 +44,7 @@ function mTab(chromeTab) {
 function readingListTab(mtab) {
     this.read = false;
     this.dateAdded = Date.now();
-    this.tab = mtab;
+    this.tab = new mTab(mtab);
 }
 
 //helper to add basic tab to reading list
@@ -109,6 +122,23 @@ var addTabToGroup = function(groupName, url){
 		}
 	});
 	
+}
+
+function storeDataModel() {
+    chrome.storage.local.set(tabManagerModel);
+}
+
+function retrieveDataModel() {
+    chrome.storage.local.get(function(items) {
+        tabManagerModel = items;
+        //updateBadge();
+    });
+}
+
+function purgeStorage() {
+    chrome.storage.local.clear(function() {
+        console.log('cleared chrome local storage');
+    });
 }
 
 //from old code base, prob a better way to do this, preferable using our data model to just generate the view instead of requery all tabs
@@ -213,6 +243,8 @@ jQuery(document).ready(function () {
         });
     });
 */
+    //updates tabManagerModel from local storage
+    retrieveDataModel();
     //from old code, not used in bootstrap view, could delete
     $('body').on('click', '.delete', function () {
         var parent = $(this).parent();
