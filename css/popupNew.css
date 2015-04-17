@@ -35,3 +35,7 @@ body {
 	display:inline;
 	width:80%;
 }
+
+li.readinglist-read{
+	background-color: aliceblue;
+}

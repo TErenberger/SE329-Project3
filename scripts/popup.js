@@ -63,10 +63,15 @@ function createTabListElement(mtab) {
 
 //helper to generate html elements for view from basic tab struct
 function createReadingListElement(readingListTab) {
-    var html = '<li class="list-group-item" id="read' + readingListTab.tab.id + '">'
+    var html = '<li class="list-group-item'
+    if(readingListTab.read)
+    {
+        html += ' readinglist-read';
+    }
+    html += '" id="read' + readingListTab.tab.id + '">'
         +'<div class="row">'
         +'<div class="col-xs-11 tab-element">'
-        +'<a class="tab-title">'
+        +'<a class="tab-title readinglist-link" data-tabid="' + readingListTab.tab.id + '">'
         + '<img class="tab-img"  height="16px" src="' + readingListTab.tab.favIconUrl + '">'
         + readingListTab.tab.title
         + '</a>'
@@ -77,6 +82,19 @@ function createReadingListElement(readingListTab) {
         + '</div>'
         +'</li>';
     return html;
+}
+
+function renderReadingList() {
+    //clear out the view to prevent duplicate HTML elements representing same object in model
+    $('#readingListView').empty();
+    for(var currentListItem in tabManagerModel.readingList)
+    {
+        if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
+        {
+            var tab = tabManagerModel.readingList[currentListItem];
+            $('#readingListView').append(createReadingListElement(tab));
+        }
+    }
 }
 
 /*
@@ -138,9 +156,7 @@ function retrieveDataModel() {
     chrome.storage.local.get(function(items) {
         if(items.hasOwnProperty('readingList'))
         {
-            var temp = tabManagerModel.allTabs;
-            tabManagerModel = items;
-            tabManagerModel.allTabs = temp;
+            tabManagerModel.readingList = items.readingList;
         }
         updateBadge();
     });
@@ -197,6 +213,14 @@ $(function() {
         $('#read' + parent.attr('id')).slideUp(function() { this.remove();});
         storeDataModel();
     });
+    $('body').on('click', '.readinglist-link', function() {
+        var id = $(this).data('tabid');
+        var url = tabManagerModel.readingList[id].tab.url;
+        tabManagerModel.readingList[id].read = true;
+        chrome.tabs.create({url: url, active: true});
+        renderReadingList();
+        storeDataModel();
+    });
 });
 //might not be as useful as last group thought
 jQuery(document).ready(function () {
@@ -211,17 +235,7 @@ jQuery(document).ready(function () {
 
     //listener on reading list tab (referring to view e.g. List, Reading List, Group) triggers the html element generation when clicked
     $('body').on('click', '#reading-list', function() {
-        //clear out the view to prevent duplicate HTML elements representing same object in model
-        $('#readingListView').empty();
-        for(var currentListItem in tabManagerModel.readingList)
-        {
-            if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
-            {
-                var tab = tabManagerModel.readingList[currentListItem];
-                $('#readingListView').append(createReadingListElement(tab));
-            }
-            
-        }
+        renderReadingList();
     });
 		
 });
