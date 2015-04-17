@@ -1,16 +1,4 @@
 //consider putting all this code in its own closure/object to expose less functions to global space
-//not sure if this is used or if we want to use it, CSS can do this
-var ellipsize = function(string) {
-  var length = 20;
-  if (string.length > length)
-    return string.substr(0, length) + '&hellip;';
-  return string;
-};
-
-//from old code base, kinda jank, should refactor
-function filterTabs(element){
-    value = $(element).val();
-}
 
 //primary model, would like to store this
 var tabManagerModel = {
@@ -19,8 +7,8 @@ var tabManagerModel = {
     groups: {}
 };
 
+//counts # of items in the reading list dictionary and sets value of badge on the extension icon
 function updateBadge() {
-
     var count = 0;
     for(var currentListItem in tabManagerModel.readingList)
     {
@@ -37,7 +25,7 @@ function mTab(chromeTab) {
     this.title = chromeTab.title;
     this.url = chromeTab.url;
     this.id = chromeTab.id;
-    this.favIconUrl = chromeTab.favIconUrl;
+    this.favIconUrl = chromeTab.favIconUrl == undefined || chromeTab.favIconUrl == '' ? '../img/favicon.ico' : chromeTab.favIconUrl;
 }
 
 //'constructor' for the reading list tab element, wraps our tab data struct
@@ -51,6 +39,7 @@ function readingListTab(mtab) {
 function addToReadingList(mtab) {
     tabManagerModel.readingList[mtab.id] = new readingListTab(mtab);
 }
+
 //helper to generate html elements for view from basic tab struct
 function createTabListElement(mtab) {
     var html = '<li class="list-group-item" id="item' + mtab.id + '">'
@@ -65,13 +54,30 @@ function createTabListElement(mtab) {
         + '<a class="readingListAddElement" data-tabnum="' + mtab.id + '"><span class="glyphicon glyphicon-pushpin"></span></a>'
         + '</div>'
         + '<div class="col-xs-1" id="' + mtab.id + '">'
-        + '<a class="close"><span class="close-button glyphicon glyphicon-remove"></span></a>'
+        + '<a class="close-tab"><span class="close-button glyphicon glyphicon-remove"></span></a>'
         + '</div>'
         + '</div>'
         +'</li>';
     return html;
 }
 
+//helper to generate html elements for view from basic tab struct
+function createReadingListElement(readingListTab) {
+    var html = '<li class="list-group-item" id="read' + readingListTab.tab.id + '">'
+        +'<div class="row">'
+        +'<div class="col-xs-11 tab-element">'
+        +'<a class="tab-title">'
+        + '<img class="tab-img"  height="16px" src="' + readingListTab.tab.favIconUrl + '">'
+        + readingListTab.tab.title
+        + '</a>'
+        + '</div>'
+        + '<div class="col-xs-1" id="' + readingListTab.tab.id + '">'
+        + '<a class="close-readinglist"><span class="close-button glyphicon glyphicon-remove"></span></a>'
+        + '</div>'
+        + '</div>'
+        +'</li>';
+    return html;
+}
 
 /*
 * storage API functions
@@ -130,8 +136,13 @@ function storeDataModel() {
 
 function retrieveDataModel() {
     chrome.storage.local.get(function(items) {
-        tabManagerModel = items;
-        //updateBadge();
+        if(items.hasOwnProperty('readingList'))
+        {
+            var temp = tabManagerModel.allTabs;
+            tabManagerModel = items;
+            tabManagerModel.allTabs = temp;
+        }
+        updateBadge();
     });
 }
 
@@ -168,121 +179,34 @@ $(function() {
             
             };
         });
-    //NYI, maybe a badge by the LIST tab
-    $('.tab-count').text(tab.length);
   });
-    //from old code, expands tab into a new window. could bring this back or we could just handle window management better.
-  /* 
-  function expand() {
-    var tabId = parseInt($(this).attr('id'), 10);
-	chrome.windows.create({ tabId: tabId, focused: true });
-  }
-  
-  $('body').on('dblclick', '#tablist li', expand);
-  
-  $('body').on('click', '.expand', expand);
 
-  $('body').on('click', '#tablist li', function() {
-    var tabId = parseInt($(this).attr('id'), 10);
-    chrome.tabs.update(tabId, { active: true });
-  });
-*/
-  $('body').on('click', '.close', function() {
-    var parent = $(this).parent();
-    chrome.tabs.remove(parseInt(parent.attr('id'), 10));
-    $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
-  });
+    //from old code, expands tab into a new window. could bring this back or we could just handle window management better.
+    function expand() {
+        var tabId = parseInt($(this).attr('id'), 10);
+    	chrome.windows.create({ tabId: tabId, focused: true });
+    }
+    $('body').on('click', '.close-tab', function() {
+        var parent = $(this).parent();
+        chrome.tabs.remove(parseInt(parent.attr('id'), 10));
+        $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
+    });
+    $('body').on('click', '.close-readinglist', function() {
+        var parent = $(this).parent();
+        delete tabManagerModel.readingList[parent.attr('id')];
+        $('#read' + parent.attr('id')).slideUp(function() { this.remove();});
+        storeDataModel();
+    });
 });
 //might not be as useful as last group thought
 jQuery(document).ready(function () {
-
-
-    //from old code, i think bootstrap does this automatically
-    /*jQuery('.tabs .tab-links a').on('click', function (e) {
-        var currentAttrValue = jQuery(this).attr('href');
-        // Show/Hide Tabs
-        jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
-        // Change/remove current tab to active
-        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
-
-        jQuery(".tab" + currentAttrValue).addClass('active').siblings().removeClass('active');
-
-        e.preventDefault();
-    });*/
-
-
-/* from old code, condense feature, not fully implemented and view removed (could delete)
-    jQuery('button').on('click', function () {
-        chrome.tabs.query({ currentWindow: true, active: false }, function (tab) {
-
-            var tabsToRemove = [];
-            condensedList = localStorage.getItem("condensedList");
-
-            if (typeof condensedList !== typeof []) {
-                condensedList = [];
-            }
-
-            for (var i = 0; i < tab.length; i++) {
-                var currentTab = tab[i];
-
-                var entry = { title: currentTab.title, url: currentTab.url };
-
-                tabsToRemove.push(currentTab.id);
-                condensedList.push(entry);
-
-                $('#condenselist').append(
-                '<li title="' + currentTab.title + '">' +
-                    '<a>' + ellipsize(currentTab.title) + '</a>' +
-                    '<span class="delete">x</span>' +
-                '</li>');
-            }
-
-            localStorage.setItem("condensedList", condensedList);
-
-            chrome.tabs.remove(tabsToRemove);
-        });
-    });
-*/
     //updates tabManagerModel from local storage
     retrieveDataModel();
-    //from old code, not used in bootstrap view, could delete
-    $('body').on('click', '.delete', function () {
-        var parent = $(this).parent();
-
-        condensedList = localStorage.getItem("condensedList");
-
-        for (var i = 0; i < condensedList.length; i++) {
-            if (condensedList[i].title === parent.attr('title')) {
-                condensedList.splice(i, 1);
-                break;
-            }
-        }
-
-        localStorage.setItem("condensedList", condensedList);
-
-        parent.remove();
-    });
-    //from old code, not used in bootstrap view
-    $('body').on('click', '#condenselist li', function () {
-        var tabTitle = $(this).attr('title');
-        var tabUrl = "";
-        condensedList = localStorage.getItem("condensedList");
-
-        for (var i = 0; i < condensedList.length; i++) {
-            if (condensedList[i].title === tabTitle) {
-                tabUrl = condensedList[i].url;
-                $(this).remove();
-                condensedList.splice(i, 1);
-                localStorage.setItem("condensedList", condensedList);
-
-                chrome.tabs.create({ url: tabUrl });
-            }
-        }
-    });
     //listener on pushpin anchor, adds target tab to reading list
     $('body').on('click', '.readingListAddElement', function (event) {
         var id = $(this).data('tabnum');
         tabManagerModel.readingList[id] = new readingListTab(tabManagerModel.allTabs[id]);
+        storeDataModel();
     });
 
     //listener on reading list tab (referring to view e.g. List, Reading List, Group) triggers the html element generation when clicked
@@ -294,7 +218,7 @@ jQuery(document).ready(function () {
             if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
             {
                 var tab = tabManagerModel.readingList[currentListItem];
-                $('#readingListView').append(createTabListElement(tab.tab));
+                $('#readingListView').append(createReadingListElement(tab));
             }
             
         }
