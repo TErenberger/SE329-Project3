@@ -95,7 +95,7 @@ function createReadingListElement(readingListTab) {
 
 function createGroupElement(group) {
     var html = '<ul class="list-group" id="group' + group.id + '">'
-    + '<li class="list-group-item">'
+    + '<li class="list-group-item" style="background-color: ' + group.color + ';">'
     + group.title
     + '</li>'
     + '</ul>';
@@ -104,6 +104,10 @@ function createGroupElement(group) {
 
 function createGroupInnerElement(tab) {
 
+}
+
+function clearGroups() {
+    tabManagerModel.groups = {};
 }
 
 function populateGroups() {
