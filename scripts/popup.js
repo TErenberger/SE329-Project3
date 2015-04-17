@@ -12,7 +12,7 @@ function updateBadge() {
     var count = 0;
     for(var currentListItem in tabManagerModel.readingList)
     {
-        if(tabManagerModel.readingList.hasOwnProperty(currentListItem))
+        if(tabManagerModel.readingList.hasOwnProperty(currentListItem) && tabManagerModel.readingList[currentListItem].read == false)
         {
             count++;
         }
@@ -63,7 +63,7 @@ function createTabListElement(mtab) {
 
 //helper to generate html elements for view from basic tab struct
 function createReadingListElement(readingListTab) {
-    var html = '<li class="list-group-item'
+    var html = '<li class="list-group-item';
     if(readingListTab.read)
     {
         html += ' readinglist-read';
@@ -150,6 +150,7 @@ var addTabToGroup = function(groupName, url){
 
 function storeDataModel() {
     chrome.storage.local.set(tabManagerModel);
+    updateBadge();
 }
 
 function retrieveDataModel() {
@@ -229,7 +230,7 @@ jQuery(document).ready(function () {
     //listener on pushpin anchor, adds target tab to reading list
     $('body').on('click', '.readingListAddElement', function (event) {
         var id = $(this).data('tabnum');
-        tabManagerModel.readingList[id] = new readingListTab(tabManagerModel.allTabs[id]);
+        addToReadingList(tabManagerModel.allTabs[id]);
         storeDataModel();
     });
 
