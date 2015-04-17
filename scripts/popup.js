@@ -35,6 +35,15 @@ function readingListTab(mtab) {
     this.tab = new mTab(mtab);
 }
 
+//'constructor' for group object
+function tabGroup(title) {
+    this.title = title;
+    this.id = title.replace('.', '');
+    this.tabs = {};
+    this.color = 'white';
+    this.domains = {};
+}
+
 //helper to add basic tab to reading list
 function addToReadingList(mtab) {
     tabManagerModel.readingList[mtab.id] = new readingListTab(mtab);
@@ -84,6 +93,48 @@ function createReadingListElement(readingListTab) {
     return html;
 }
 
+function createGroupElement(group) {
+    var html = '<ul class="list-group" id="group' + group.id + '">'
+    + '<li class="list-group-item">'
+    + group.title
+    + '</li>'
+    + '</ul>';
+    return html;
+}
+
+function createGroupInnerElement(tab) {
+
+}
+
+function populateGroups() {
+    var domains = {};
+    for(var currentTabIndex in tabManagerModel.allTabs)
+    {
+        var currentTab = tabManagerModel.allTabs[currentTabIndex];
+        var results = currentTab.url.match(/[A-z]*(.com|.co.uk|.us|.org|.net|.mobi)/);
+        if(results != undefined)
+        {
+            if(domains[results[0]] == undefined)
+            {
+                domains[results[0]] = new Array();
+                domains[results[0]].push(new mTab(currentTab));
+                var groupTab = new mTab(currentTab);
+                tabManagerModel.groups[results[0]] = new tabGroup(results[0]);
+                tabManagerModel.groups[results[0]].tabs[groupTab.id] = groupTab;
+            }
+            else
+            {
+                var groupTab = new mTab(currentTab);
+                domains[results[0]].push(new mTab(groupTab));
+                tabManagerModel.groups[results[0]].tabs[groupTab.id] = groupTab;
+            }
+            
+        }
+    }
+
+    console.log(tabManagerModel.groups);
+}
+
 function renderReadingList() {
     //clear out the view to prevent duplicate HTML elements representing same object in model
     $('#readingListView').empty();
@@ -93,6 +144,20 @@ function renderReadingList() {
         {
             var tab = tabManagerModel.readingList[currentListItem];
             $('#readingListView').append(createReadingListElement(tab));
+        }
+    }
+}
+
+function renderGroupList() {
+    $('#groupView').empty();
+    for(var currentGroupIndex in tabManagerModel.groups)
+    {
+        var currentGroup = tabManagerModel.groups[currentGroupIndex];
+        $('#groupView').append(createGroupElement(currentGroup));
+        for(currentTab in currentGroup.tabs)
+        {
+            console.log(currentGroup.id);
+            $('#group' + currentGroup.id).append(createTabListElement(currentGroup.tabs[currentTab]));
         }
     }
 }
@@ -237,6 +302,17 @@ jQuery(document).ready(function () {
     //listener on reading list tab (referring to view e.g. List, Reading List, Group) triggers the html element generation when clicked
     $('body').on('click', '#reading-list', function() {
         renderReadingList();
+    });
+
+    $('body').on('click', '#group-list', function() {
+        populateGroups();
+        renderGroupList();
+    });
+
+    $('body').on('click', '#add-group-button', function() {
+        var title = $('#group-name-input').val();
+        tabManagerModel.groups[title] = new tabGroup(title);
+        renderGroupList();
     });
 		
 });

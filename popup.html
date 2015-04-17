@@ -16,7 +16,7 @@
         <ul class="nav nav-tabs" role="tablist">
             <li class="active" role="presentation"><a href="#first"aria-controls="first" role="tab" data-toggle="tab">List</a></li>
             <li role="presentation"><a id="reading-list" href="#second" aria-controls="second" role="tab" data-toggle="tab">Reading List</a></li>
-            <li role="presentation"><a href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
+            <li role="presentation"><a id="group-list" href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
         </ul>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="first">
@@ -48,8 +48,24 @@
                 </ul>
             </div>
             <div role="tabpanel" class="tab-pane" id="third">
-                <p> hello 3</p>
-				
+                <ul class="list-group" id="group-add">
+                    <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-10">
+                        <input class="form-control" id="group-name-input" type="text" placeholder="new group name">
+                        </div>
+                        <div class="col-xs-2">
+                            <a id="add-group-button" class="btn btn-default"><span class="plus glyphicon glyphicon-plus"></span></a>
+                        </div>
+                    </div>
+                    </li>
+                </ul>
+
+
+
+				<div id="groupView">
+                    
+                </div>
             </div>
         </div>
     </div>

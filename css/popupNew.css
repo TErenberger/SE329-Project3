@@ -39,3 +39,7 @@ body {
 li.readinglist-read{
 	background-color: aliceblue;
 }
+
+span.plus {
+	line-height: 1.42857143;
+}
