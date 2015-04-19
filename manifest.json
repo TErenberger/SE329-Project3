@@ -4,6 +4,7 @@
     "manifest_version": 2,
     "description": "Let's you very easy and fast handle your tabs!",
     "permissions": ["tabs", "storage"],
+    "options_page": "options.html",
     "browser_action": {
         "default_icon": "browser_action.png",
         "default_popup": "popup.html"

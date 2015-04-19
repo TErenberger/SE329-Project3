@@ -4,7 +4,8 @@
 var tabManagerModel = {
     allTabs: {},
     readingList: {},
-    groups: {}
+    groups: {},
+    groupSettings: {}
 };
 
 //counts # of items in the reading list dictionary and sets value of badge on the extension icon
@@ -115,7 +116,8 @@ function populateGroups() {
     for(var currentTabIndex in tabManagerModel.allTabs)
     {
         var currentTab = tabManagerModel.allTabs[currentTabIndex];
-        var results = currentTab.url.match(/[A-z]*(.com|.co.uk|.us|.org|.net|.mobi)/);
+        var results = currentTab.url.match(/[A-z]*(.com|.co.uk|.us|.org|.net|.mobi|.edu)/);
+
         if(results != undefined)
         {
             if(domains[results[0]] == undefined)
@@ -242,7 +244,8 @@ function purgeStorage() {
 
 //from old code base, prob a better way to do this, preferable using our data model to just generate the view instead of requery all tabs
 $(function() {
-  chrome.tabs.query({ currentWindow: true }, function(tab) {
+
+  chrome.tabs.query({ }, function(tab) {
     //loops through the broad query to add the tabs to our data model. When we get storage going, this may need to clear out the tabs or do a set union
     //to prevent duplicates.
     for (var i = tab.length - 1; i >= 0; i--) {
@@ -253,23 +256,22 @@ $(function() {
         //add to the global data structure
         tabManagerModel.allTabs[currentTab.id] = currentTab;
     }
-    //actually works 
-    $('#search').keyup(function(){
+
+    //actually works
+    $('#search').keyup(function() {
             var value = $(this).val().toLocaleLowerCase();
-            if(value == ""){
+            if(value == "") {
                 $('#tablist > li').show();
             }
-            else{
-                $('#tablist > li').each(function(){
+            else {
+                $('#tablist > li').each(function() {
                     var select = $(this).text().toLocaleLowerCase();
                     (select.indexOf(value) >= 0) ? $(this).show() : $(this).hide();
                 });
             
             };
     });
-		
 		//search for reading list
-
   });
 
     //from old code, expands tab into a new window. could bring this back or we could just handle window management better.
@@ -277,26 +279,33 @@ $(function() {
         var tabId = parseInt($(this).attr('id'), 10);
     	chrome.windows.create({ tabId: tabId, focused: true });
     }
+
+    // button for closing a tab
     $('body').on('click', '.close-tab', function() {
         var parent = $(this).parent();
         chrome.tabs.remove(parseInt(parent.attr('id'), 10));
         $('#item' + parent.attr('id')).slideUp(function() { this.remove();});
     });
+
+    // button for removing an item from the reading list
     $('body').on('click', '.close-readinglist', function() {
         var parent = $(this).parent();
         delete tabManagerModel.readingList[parent.attr('id')];
         $('#read' + parent.attr('id')).slideUp(function() { this.remove();});
         storeDataModel();
     });
+
+    // button to open an item in the reading list
     $('body').on('click', '.readinglist-link', function() {
         var id = $(this).data('tabid');
         var url = tabManagerModel.readingList[id].tab.url;
         tabManagerModel.readingList[id].read = true;
         chrome.tabs.create({url: url, active: true});
-        renderReadingList();
+        //renderReadingList();
         storeDataModel();
     });
 });
+
 //might not be as useful as last group thought
 jQuery(document).ready(function () {
     //updates tabManagerModel from local storage
@@ -320,8 +329,12 @@ jQuery(document).ready(function () {
 
     $('body').on('click', '#add-group-button', function() {
         var title = $('#group-name-input').val();
-        tabManagerModel.groups[title] = new tabGroup(title);
-        renderGroupList();
+
+        // Make sure the title is not empty and the title does not already exist
+        if (title != undefined && tabManagerModel.groups[title] == undefined) {
+            tabManagerModel.groups[title] = new tabGroup(title);
+            renderGroupList();
+        }
     });
 	
 	$('#readinglistsearch').keyup(function(){

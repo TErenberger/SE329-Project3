@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <html>
-
 <head>
     <script type="text/javascript" src="scripts/jquery.js"></script>
     <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
@@ -12,6 +12,8 @@
 
 <div class="container-fluid">
     <h3 class="text-center">Tab Manager</h3>
+
+    <!-- Tab panel -->
     <div role="tabpanel">
         <ul class="nav nav-tabs" role="tablist">
             <li class="active" role="presentation"><a href="#first"aria-controls="first" role="tab" data-toggle="tab">List</a></li>
@@ -19,6 +21,8 @@
             <li role="presentation"><a id="group-list" href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
         </ul>
         <div class="tab-content">
+
+            <!-- Tab list -->
             <div role="tabpanel" class="tab-pane active" id="first">
                 <ul class="list-group" id="s">
                     <li class="list-group-item">
@@ -33,6 +37,8 @@
                     </ul>
                 
             </div>
+
+            <!-- Reading list -->
             <div role="tabpanel" class="tab-pane" id="second">
                 <ul class="list-group" id="reading-list">
                     <li class="list-group-item">
@@ -47,12 +53,14 @@
                     
                 </ul>
             </div>
+
+            <!-- Groups -->
             <div role="tabpanel" class="tab-pane" id="third">
                 <ul class="list-group" id="group-add">
                     <li class="list-group-item">
                     <div class="row">
                         <div class="col-xs-10">
-                        <input class="form-control" id="group-name-input" type="text" placeholder="new group name">
+                            <input class="form-control" id="group-name-input" type="text" placeholder="new group name">
                         </div>
                         <div class="col-xs-2">
                             <a id="add-group-button" class="btn btn-default"><span class="plus glyphicon glyphicon-plus"></span></a>
@@ -62,9 +70,7 @@
                 </ul>
 
 
-
-				<div id="groupView">
-                    
+                <div id="groupView">
                 </div>
             </div>
         </div>
@@ -98,3 +104,30 @@
 </body>
 
 </html>
+
+
+<!--
+<div role="tabpanel" class="tab-pane" id="third">
+    <ul class="list-group" id="group-add">
+        <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-10">
+            <input class="form-control" id="group-name-input" type="text" placeholder="new group name">
+            </div>
+            <div class="col-xs-2">
+                <a id="add-group-button" class="btn btn-default"><span class="plus glyphicon glyphicon-plus"></span></a>
+            </div>
+            <!- - Create new group - ->
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <input class="form-control" id="createGroup-text" type="text" name="groupSearch" placeholder="New Group Name"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" id="createGroup-button" type="button" name="createGroup-button">Create</button>
+                   </span>
+                </div>
+            </div>
+        </div>
+        </li>
+    </ul>
+</div>
+-->
