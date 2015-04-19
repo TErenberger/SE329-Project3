@@ -139,6 +139,7 @@ function populateGroups() {
     console.log(tabManagerModel.groups);
 }
 
+		
 function renderReadingList() {
     //clear out the view to prevent duplicate HTML elements representing same object in model
     $('#readingListView').empty();
@@ -236,6 +237,7 @@ function purgeStorage() {
     chrome.storage.local.clear(function() {
         console.log('cleared chrome local storage');
     });
+
 }
 
 //from old code base, prob a better way to do this, preferable using our data model to just generate the view instead of requery all tabs
@@ -264,7 +266,10 @@ $(function() {
                 });
             
             };
-        });
+    });
+		
+		//search for reading list
+
   });
 
     //from old code, expands tab into a new window. could bring this back or we could just handle window management better.
@@ -318,5 +323,19 @@ jQuery(document).ready(function () {
         tabManagerModel.groups[title] = new tabGroup(title);
         renderGroupList();
     });
+	
+	$('#readinglistsearch').keyup(function(){
+		var value = $(this).val().toLocaleLowerCase();
+		if(value == ""){
+			$('#readingListView > li').show();
+		}
+		else{
+			$('#readingListView > li').each(function(){
+				var select = $(this).text().toLocaleLowerCase();
+				(select.indexOf(value) >= 0) ? $(this).show() : $(this).hide();
+			});
+		
+		};
+	});
 		
 });
