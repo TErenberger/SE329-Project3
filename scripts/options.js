@@ -59,7 +59,9 @@ function restore_options() {
 
     // Restore options from storage
     chrome.storage.sync.get({
-        groupSettings: { groups: {} }
+        groupSettings: {
+            groups: {}
+        }
     }, function(items) {
 
         // Update the local values
@@ -79,8 +81,7 @@ jQuery(document).ready(function() {
     $('body').on('click', '#save-button', function(event) {
         var selectedItem = $('#group-selector').val();
 
-        if (selectedItem != 'Choose a Group')
-        {
+        if (selectedItem != 'Choose a Group') {
             groupSettings.groups[selectedItem].rules = $('#group-rules-input').val();
         }
 
@@ -97,7 +98,7 @@ jQuery(document).ready(function() {
         if (name != undefined && groupSettings.groups[name] == undefined) {
             groupSettings.groups[name] = new group(name);
             groupSettings.groups[name].rules = $('#group-rules-input').val();
-            
+
             // Update drop down
             populateGroupSelector();
 
@@ -138,8 +139,7 @@ jQuery(document).ready(function() {
         $('#group-rules-input').val('');
 
         // Only update them if a valid group was chosen (not the placeholder)
-        if (selectedItem != 'Choose a Group')
-        {
+        if (selectedItem != 'Choose a Group') {
             $('#group-name-input').val(groupSettings.groups[selectedItem].title);
             $('#group-rules-input').val(groupSettings.groups[selectedItem].rules);
         }
