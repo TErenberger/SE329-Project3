@@ -82,7 +82,9 @@ jQuery(document).ready(function() {
         var selectedItem = $('#group-selector').val();
 
         if (selectedItem != 'Choose a Group') {
+            groupSettings.groups[selectedItem].name = $('#group-name-input').val();
             groupSettings.groups[selectedItem].rules = $('#group-rules-input').val();
+            groupSettings.groups[selectedItem].color = $('#color-selector').val();
         }
 
         saveOptions();
@@ -98,6 +100,7 @@ jQuery(document).ready(function() {
         if (name != undefined && groupSettings.groups[name] == undefined) {
             groupSettings.groups[name] = new group(name);
             groupSettings.groups[name].rules = $('#group-rules-input').val();
+            groupSettings.groups[name].color = $('#color-selector').val();
 
             // Update drop down
             populateGroupSelector();
@@ -142,6 +145,7 @@ jQuery(document).ready(function() {
         if (selectedItem != 'Choose a Group') {
             $('#group-name-input').val(groupSettings.groups[selectedItem].name);
             $('#group-rules-input').val(groupSettings.groups[selectedItem].rules);
+            $('#color-selector').val(groupSettings.groups[selectedItem].color);
         }
     });
 });

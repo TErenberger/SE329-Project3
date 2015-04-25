@@ -41,11 +41,11 @@ function readingListTab(mtab) {
 }
 
 //'constructor' for group object
-function tabGroup(title) {
+function tabGroup(title, color) {
     this.title = title;
     this.id = title.replace('.', '');
     this.tabs = {};
-    this.color = 'white';
+    this.color = color;
     this.domains = {};
 }
 
@@ -128,7 +128,7 @@ function populateGroups() {
                 domains[results[0]] = new Array();
                 domains[results[0]].push(new mTab(currentTab));
                 var groupTab = new mTab(currentTab);
-                tabManagerModel.groups[results[0]] = new tabGroup(results[0]);
+                tabManagerModel.groups[results[0]] = new tabGroup(results[0], 'white');
                 tabManagerModel.groups[results[0]].tabs[groupTab.id] = groupTab;
             }
             else
@@ -140,8 +140,6 @@ function populateGroups() {
             
         }
     }
-
-    console.log(tabManagerModel.groups);
 }
 
 function populateCustomGroups() {
@@ -152,8 +150,7 @@ function populateCustomGroups() {
 
         // Get the rules for this group, and replace the commas and white space with a '|'
         var curRules = curGroup.rules.replace(/\s*,\s*/g, "|");
-
-        tabManagerModel.customGroups[curGroup.name] = new tabGroup(curGroup.name)
+        tabManagerModel.customGroups[curGroup.name] = new tabGroup(curGroup.name, curGroup.color)
 
         // For each open tab, check to see if it matches any rules of the current group
         for (var currentTabIndex in tabManagerModel.allTabs) {
@@ -163,8 +160,6 @@ function populateCustomGroups() {
 
             // If the rule was matched, add it to the custom group
             if (results != undefined) {
-                var groupTab = new mTab(currentTab);
-                tabManagerModel.customGroups[curGroup.name].tabs[groupTab.id] = groupTab;
                 var groupTab = new mTab(currentTab);
                 tabManagerModel.customGroups[curGroup.name].tabs[groupTab.id] = groupTab;
             }
@@ -193,7 +188,6 @@ function renderGroupList() {
         $('#groupView').append(createGroupElement(currentGroup));
         for(currentTab in currentGroup.tabs)
         {
-            console.log(currentGroup.id);
             $('#group' + currentGroup.id).append(createTabListElement(currentGroup.tabs[currentTab]));
         }
     }
@@ -207,7 +201,6 @@ function renderCustomGroupList() {
         $('#customGroupView').append(createGroupElement(currentGroup));
         for(currentTab in currentGroup.tabs)
         {
-            console.log(currentGroup.id);
             $('#group' + currentGroup.id).append(createTabListElement(currentGroup.tabs[currentTab]));
         }
     }
