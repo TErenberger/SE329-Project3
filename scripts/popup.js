@@ -5,7 +5,11 @@ var tabManagerModel = {
     allTabs: {},
     readingList: {},
     groups: {},
-    groupSettings: {}
+    customGroups: {}
+};
+
+var groupSettings = {
+    groups: {}
 };
 
 //counts # of items in the reading list dictionary and sets value of badge on the extension icon
@@ -117,7 +121,6 @@ function populateGroups() {
     {
         var currentTab = tabManagerModel.allTabs[currentTabIndex];
         var results = currentTab.url.match(/[A-z]*(.com|.co.uk|.us|.org|.net|.mobi|.edu)/);
-
         if(results != undefined)
         {
             if(domains[results[0]] == undefined)
@@ -141,6 +144,33 @@ function populateGroups() {
     console.log(tabManagerModel.groups);
 }
 
+function populateCustomGroups() {
+
+    // For each custom group, check each of its rules against all the open tabs
+    for (var grp in groupSettings.groups) {
+        var curGroup = groupSettings.groups[grp];
+
+        // Get the rules for this group, and replace the commas and white space with a '|'
+        var curRules = curGroup.rules.replace(/\s*,\s*/g, "|");
+
+        tabManagerModel.customGroups[curGroup.name] = new tabGroup(curGroup.name)
+
+        // For each open tab, check to see if it matches any rules of the current group
+        for (var currentTabIndex in tabManagerModel.allTabs) {
+            var currentTab = tabManagerModel.allTabs[currentTabIndex];
+
+            var results = currentTab.url.match(new RegExp('[A-z0-9]*(' + curRules + ')'));
+
+            // If the rule was matched, add it to the custom group
+            if (results != undefined) {
+                var groupTab = new mTab(currentTab);
+                tabManagerModel.customGroups[curGroup.name].tabs[groupTab.id] = groupTab;
+                var groupTab = new mTab(currentTab);
+                tabManagerModel.customGroups[curGroup.name].tabs[groupTab.id] = groupTab;
+            }
+        }
+    }
+}
 		
 function renderReadingList() {
     //clear out the view to prevent duplicate HTML elements representing same object in model
@@ -169,9 +199,38 @@ function renderGroupList() {
     }
 }
 
+function renderCustomGroupList() {
+    $('#customGroupView').empty();
+    for(var currentGroupIndex in tabManagerModel.customGroups)
+    {
+        var currentGroup = tabManagerModel.customGroups[currentGroupIndex];
+        $('#customGroupView').append(createGroupElement(currentGroup));
+        for(currentTab in currentGroup.tabs)
+        {
+            console.log(currentGroup.id);
+            $('#group' + currentGroup.id).append(createTabListElement(currentGroup.tabs[currentTab]));
+        }
+    }
+}
+
 /*
-* storage API functions
-*/ 
+ * Loads the custom group settings from chrome.storage
+ */
+function loadCustomGroupSettings() {
+
+    // Restore options from storage
+    chrome.storage.sync.get({
+        groupSettings: {
+            groups: {}
+        }
+    }, function(items) {
+        groupSettings = items.groupSettings;
+    });
+}
+
+/*
+ * storage API functions
+ */ 
 var createGroup = function(groupName, url){
 	var obj = new Object();
 	obj[groupName] = url;
@@ -179,8 +238,8 @@ var createGroup = function(groupName, url){
 }
 
 /*
-* returns the names of every group, delimited by a comma
-*/
+ * returns the names of every group, delimited by a comma
+ */
 var getGroups = function(){
 	chrome.storage.local.get(null, function(items){
 		alert(Object.keys(items));
@@ -188,9 +247,9 @@ var getGroups = function(){
 }
 
 /*
-* returns the urls associated with the specified group name
-* urls are retuned as one string for now, delimited by white space.
-*/
+ * returns the urls associated with the specified group name
+ * urls are retuned as one string for now, delimited by white space.
+ */
 var getTabsInGroup = function(groupName){
 	chrome.storage.local.get(groupName, function(items){
 		alert(items[groupName]);
@@ -198,8 +257,8 @@ var getTabsInGroup = function(groupName){
 }
 
 /*
-* adds a tab url to the given group, creates the group if it does not exist already
-*/
+ * adds a tab url to the given group, creates the group if it does not exist already
+ */
 var addTabToGroup = function(groupName, url){
 	var currentTabsInGroup;
 	chrome.storage.local.get(groupName, function(items){
@@ -242,9 +301,9 @@ function purgeStorage() {
 
 }
 
+
 //from old code base, prob a better way to do this, preferable using our data model to just generate the view instead of requery all tabs
 $(function() {
-
   chrome.tabs.query({ }, function(tab) {
     //loops through the broad query to add the tabs to our data model. When we get storage going, this may need to clear out the tabs or do a set union
     //to prevent duplicates.
@@ -306,6 +365,7 @@ $(function() {
     });
 });
 
+
 //might not be as useful as last group thought
 jQuery(document).ready(function () {
     //updates tabManagerModel from local storage
@@ -327,14 +387,10 @@ jQuery(document).ready(function () {
         renderGroupList();
     });
 
-    $('body').on('click', '#add-group-button', function() {
-        var title = $('#group-name-input').val();
-
-        // Make sure the title is not empty and the title does not already exist
-        if (title != undefined && tabManagerModel.groups[title] == undefined) {
-            tabManagerModel.groups[title] = new tabGroup(title);
-            renderGroupList();
-        }
+    $('body').on('click', '#custom-group-list', function() {
+        loadCustomGroupSettings();
+        populateCustomGroups();
+        renderCustomGroupList();
     });
 	
 	$('#readinglistsearch').keyup(function(){

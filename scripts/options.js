@@ -39,7 +39,7 @@ function populateGroupSelector() {
 }
 
 // Saves options to chrome.storage
-function save_options() {
+function saveOptions() {
 
     // Sync options to storage
     chrome.storage.sync.set({
@@ -55,7 +55,7 @@ function save_options() {
 }
 
 // Restores settings stored in chrome.storage.
-function restore_options() {
+function restoreOptions() {
 
     // Restore options from storage
     chrome.storage.sync.get({
@@ -71,7 +71,7 @@ function restore_options() {
         populateGroupSelector();
     });
 }
-document.addEventListener('DOMContentLoaded', restore_options);
+document.addEventListener('DOMContentLoaded', restoreOptions);
 
 
 // Listeners
@@ -85,7 +85,7 @@ jQuery(document).ready(function() {
             groupSettings.groups[selectedItem].rules = $('#group-rules-input').val();
         }
 
-        save_options();
+        saveOptions();
     });
 
     // Create a new group
@@ -118,7 +118,7 @@ jQuery(document).ready(function() {
             for (var item in groupSettings.groups) {
                 // FIXME:  (this is broken)
                 // Delete the selected item
-                if (groupSettings.groups[item].title == $('#group-selector').val()) {
+                if (groupSettings.groups[item].name == $('#group-selector').val()) {
                     delete groupSettings.groups[item];
                     break;
                 }
@@ -140,7 +140,7 @@ jQuery(document).ready(function() {
 
         // Only update them if a valid group was chosen (not the placeholder)
         if (selectedItem != 'Choose a Group') {
-            $('#group-name-input').val(groupSettings.groups[selectedItem].title);
+            $('#group-name-input').val(groupSettings.groups[selectedItem].name);
             $('#group-rules-input').val(groupSettings.groups[selectedItem].rules);
         }
     });

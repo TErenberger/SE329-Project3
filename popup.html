@@ -19,6 +19,7 @@
             <li class="active" role="presentation"><a href="#first"aria-controls="first" role="tab" data-toggle="tab">List</a></li>
             <li role="presentation"><a id="reading-list" href="#second" aria-controls="second" role="tab" data-toggle="tab">Reading List</a></li>
             <li role="presentation"><a id="group-list" href="#third" aria-controls="third" role="tab" data-toggle="tab">Group</a></li>
+            <li role="presentation"><a id="custom-group-list" href="#fourth" aria-controls="fourth" role="tab" data-toggle="tab">Custom Groups</a></li>
         </ul>
         <div class="tab-content">
 
@@ -28,14 +29,13 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-xs-12">
-                            <input class="form-control"id="search" type="text" autofocus="autofocus" name="listSearch" placeholder="Search Tabs" >
+                                <input class="form-control"id="search" type="text" autofocus="autofocus" name="listSearch" placeholder="Search Tabs" />
                             </div>
                         </div>
                     </li>
                 </ul>
-                    <ul class="list-group" id="tablist">
-                    </ul>
-                
+                <ul class="list-group" id="tablist">
+                </ul>
             </div>
 
             <!-- Reading list -->
@@ -44,35 +44,27 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-xs-12">
-                            <input class="form-control"id="readinglistsearch" type="text" autofocus="autofocus" name="readinglistSearch" placeholder="Search Reading List" >
+                                <input class="form-control"id="readinglistsearch" type="text" autofocus="autofocus" name="readinglistSearch" placeholder="Search Reading List" />
                             </div>
                         </div>
                     </li>
                 </ul>
                 <ul class="list-group" id="readingListView">
-                    
                 </ul>
             </div>
 
             <!-- Groups -->
             <div role="tabpanel" class="tab-pane" id="third">
-                <ul class="list-group" id="group-add">
-                    <li class="list-group-item">
-                    <div class="row">
-                        <div class="col-xs-10">
-                            <input class="form-control" id="group-name-input" type="text" placeholder="new group name">
-                        </div>
-                        <div class="col-xs-2">
-                            <a id="add-group-button" class="btn btn-default"><span class="plus glyphicon glyphicon-plus"></span></a>
-                        </div>
-                    </div>
-                    </li>
+                <ul class="list-group" id="groupView">
                 </ul>
-
-
-                <div id="groupView">
-                </div>
             </div>
+
+            <!-- Custom Groups -->
+            <div role="tabpanel" class="tab-pane" id="fourth">
+                <ul class="list-group" id="customGroupView">
+                </ul>
+            </div>
+
         </div>
     </div>
 </div>
